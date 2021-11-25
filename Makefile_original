@@ -18,7 +18,7 @@ LIBS := -lboost_thread -lboost_filesystem -lboost_system -lpthread -lleveldb -lh
 
 LIB_DIR   = lib/leveldb/out-shared  lib/HdrHistogram_c-0.9.4/src
 INC_DIR   = src  lib/threadpool  lib/leveldb/include  lib/HdrHistogram_c-0.9.4/src
-SRC_DIR   =	src  src/coding  src/ds  src/util  
+SRC_DIR   =	src  src/coding  src/ds  src/util  src/tests
 OBJ_DIR   = src/obj 
 EXTRA_SRC = 
 EXCLUDE_FILES = 
@@ -26,8 +26,8 @@ EXCLUDE_OBJS =
 
 SUFFIX       = c cpp cc cxx
 TARGET_DIR   = ./bin
-TARGET       := libhashkv.so
-TARGET_TYPE  := so
+TARGET       := hashkv_test
+TARGET_TYPE  := app
 
 ifdef GPROF
     EXTRA_CFLAGS += -pg 
@@ -125,16 +125,8 @@ $1: $(share_objs) $3$(notdir $1).o
 
 endef
 
-define my_cmd_t
-$1: $(share_objs)
-	$(G++) -fPIC $(LDFLAGS) $(lib_dir) $(share_objs) -o $2$1 $(LIBS)
-
-endef
-
-
 $(eval $(foreach i,$(SUFFIX),$(call cmd_o,$i,$(prefix_objdir))))
-# $(eval $(foreach i,$(TARGET),$(call cmd_t,$i,$(prefix_bindir),$(prefix_objdir))))
-$(eval $(foreach i,$(TARGET),$(call my_cmd_t,$i,$(prefix_bindir),$(prefix_objdir))))
+$(eval $(foreach i,$(TARGET),$(call cmd_t,$i,$(prefix_bindir),$(prefix_objdir))))
 
 .mkdir:
 	@if [ ! -d $(OBJ_DIR) ]; then mkdir -p $(OBJ_DIR); fi
